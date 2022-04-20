@@ -17,10 +17,9 @@ public class ConnectionPoolCapacityTask extends TimerTask {
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionCreator creator = ConnectionCreator.getInstance();
     private static final Timer timer = new Timer();
-    private static final String DB_PROPERTY_POOL_CAPACITY_TASK_TIME_DELAY =
-            "task_time_delay";
-    private static final String DB_PROPERTY_POOL_CAPACITY_TASK_TIME_INTERVAL =
-            "task_time_interval";
+
+    private static final String DB_PROPERTY_POOL_CAPACITY_TASK_TIME_DELAY = "task_time_delay";
+    private static final String DB_PROPERTY_POOL_CAPACITY_TASK_TIME_INTERVAL = "task_time_interval";
     private static final String DB_PROPERTY_QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION =
             "task_attempt_quantity";
     private static final String INTEGER_REGEXP = "\\d+";
@@ -30,9 +29,9 @@ public class ConnectionPoolCapacityTask extends TimerTask {
     private static final int POOL_CAPACITY_TASK_TIME_DELAY;
     private static final int POOL_CAPACITY_TASK_TIME_INTERVAL;
     private static final int QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION;
-    private static BlockingQueue<ProxyConnection> freeConnections;
-    private static BlockingQueue<ProxyConnection> usedConnections;
 
+    private final BlockingQueue<ProxyConnection> freeConnections;
+    private final BlockingQueue<ProxyConnection> usedConnections;
 
     static {
 
@@ -59,24 +58,26 @@ public class ConnectionPoolCapacityTask extends TimerTask {
         }
     }
 
-    private ConnectionPoolCapacityTask() {
+    private ConnectionPoolCapacityTask(BlockingQueue<ProxyConnection> freeConnections,
+                                       BlockingQueue<ProxyConnection> usedConnections) {
+
+        this.freeConnections = freeConnections;
+        this.usedConnections = usedConnections;
     }
 
     @Override
     public void run() {
 
-        Connection connection;
-        ProxyConnection proxyConnection;
         int attemptCount = 0;
         while (ConnectionPool.CONNECTION_POOL_CAPACITY !=
                 freeConnections.size() + usedConnections.size() &&
                 attemptCount <= QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION) {
             try {
-                connection = creator.createConnection();
-                proxyConnection = new ProxyConnection(connection);
+                Connection connection = creator.createConnection();
+                ProxyConnection proxyConnection = new ProxyConnection(connection);
                 freeConnections.add(proxyConnection);
             } catch (ConnectionCreatorException e) {
-                logger.log(Level.WARN, "Extra connection has not been created.", e);
+                logger.log(Level.ERROR, "Extra connection has not been created.", e);
                 attemptCount++;
                 //TODO what to do if the pool isn't recovered?
             }
@@ -86,9 +87,8 @@ public class ConnectionPoolCapacityTask extends TimerTask {
     static void startPoolCapacityTask(BlockingQueue<ProxyConnection> freeConnections,
                                       BlockingQueue<ProxyConnection> usedConnections) {
 
-        ConnectionPoolCapacityTask.freeConnections = freeConnections;
-        ConnectionPoolCapacityTask.usedConnections = usedConnections;
-        ConnectionPoolCapacityTask capacityTask = new ConnectionPoolCapacityTask();
+        ConnectionPoolCapacityTask capacityTask =
+                new ConnectionPoolCapacityTask(freeConnections, usedConnections);
         timer.schedule(capacityTask,
                 POOL_CAPACITY_TASK_TIME_DELAY,
                 POOL_CAPACITY_TASK_TIME_INTERVAL);
