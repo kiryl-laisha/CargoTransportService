@@ -195,21 +195,14 @@ public class ConnectionPool {
 
     private void deregisterDrivers() {
 
-        try {
-            DriverManager.deregisterDriver(DriverManager.getDriver(URL));
-        } catch (SQLException e) {
-            logger.log(Level.ERROR, "Database access error occurred when " +
-                    "Driver was removed from driver list.");
-        }
-
-        /*DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
+        DriverManager.getDrivers().asIterator().forEachRemaining(driver -> {
             try {
                 DriverManager.deregisterDriver(driver);
                 logger.log(Level.DEBUG, "Driver was removed from driver list.");
             } catch (SQLException e) {
                 logger.log(Level.ERROR, "Database access error occurred when " +
-                        "Driver was removed from driver list.");
+                        "driver was removed from driver list.");
             }
-        });*/
+        });
     }
 }
