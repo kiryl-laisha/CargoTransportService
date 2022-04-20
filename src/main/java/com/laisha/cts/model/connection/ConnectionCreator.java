@@ -1,6 +1,6 @@
-package com.laisha.cargotransportservice.connection;
+package com.laisha.cts.model.connection;
 
-import com.laisha.cargotransportservice.exception.ConnectionCreatorException;
+import com.laisha.cts.exception.ConnectionCreatorException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,13 +12,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class ConnectionCreator {
+class ConnectionCreator {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String DATABASE_PROPERTY_FILE = "config/database.properties";
-    private static final String DATABASE_PROPERTY_DRIVER = "driver";
-    private static final String DATABASE_PROPERTY_URL = "url";
+    private static final String DB_PROPERTY_FILE = "config/database.properties";
+    private static final String DB_PROPERTY_DRIVER = "driver";
+    private static final String DB_PROPERTY_URL = "url";
 
     private static final ConnectionCreator instance = new ConnectionCreator();
     private static final String URL;
@@ -27,28 +27,31 @@ public class ConnectionCreator {
     static {
         String driverName = null;
         try (InputStream inputStream = ConnectionCreator.class.getClassLoader()
-                .getResourceAsStream(DATABASE_PROPERTY_FILE)) {
+                .getResourceAsStream(DB_PROPERTY_FILE)) {
             databaseProperties.load(inputStream);
-            driverName = databaseProperties.getProperty(DATABASE_PROPERTY_DRIVER);
+            driverName = databaseProperties.getProperty(DB_PROPERTY_DRIVER);
             Class.forName(driverName);
-            URL = databaseProperties.getProperty(DATABASE_PROPERTY_URL);
+            URL = databaseProperties.getProperty(DB_PROPERTY_URL);
         } catch (IOException e) {
-            logger.log(Level.FATAL, "The properties file \"{}\" could not be loaded. {}.", driverName, e);
-            throw new RuntimeException("The properties file " + driverName + " could not be loaded. ", e);
+            logger.log(Level.FATAL, "The file with properties \"{}\" could not be " +
+                    "loaded. {}.", DB_PROPERTY_FILE, e);
+            throw new ExceptionInInitializerError("The file with properties \""
+                    + DB_PROPERTY_FILE + "\" could not be loaded. ");
         } catch (ClassNotFoundException e) {
-            logger.log(Level.FATAL, "The driver \"{}\" registration is failed. {}.", driverName, e);
-            throw new RuntimeException("The driver " + driverName + " registration is failed. ", e);
+            logger.log(Level.FATAL, "The driver \"{}\" registration was failed. {}", driverName, e);
+            throw new ExceptionInInitializerError("The driver \"" + driverName + " " +
+                    "\" registration was failed. ");
         }
     }
 
     private ConnectionCreator() {
     }
 
-    public static ConnectionCreator getInstance() {
+    static ConnectionCreator getInstance() {
         return instance;
     }
 
-    public Connection createConnection() throws ConnectionCreatorException {
+    Connection createConnection() throws ConnectionCreatorException {
 
         Connection connection;
         try {

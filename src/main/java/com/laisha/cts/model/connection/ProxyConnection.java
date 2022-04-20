@@ -1,4 +1,4 @@
-package com.laisha.cargotransportservice.connection;
+package com.laisha.cts.model.connection;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ProxyConnection implements Connection {
+class ProxyConnection implements Connection {
 
     private static final Logger logger = LogManager.getLogger();
-    private final Connection connection;
+    private Connection connection;
 
     public ProxyConnection(Connection connection) {
         this.connection = connection;
@@ -29,7 +29,7 @@ public class ProxyConnection implements Connection {
             connection.close();
         } catch (SQLException e) {
             logger.log(Level.WARN, "Database access error occurred while" +
-                    "connection is closed.", e);
+                    "connection was being closed.", e);
         }
     }
 

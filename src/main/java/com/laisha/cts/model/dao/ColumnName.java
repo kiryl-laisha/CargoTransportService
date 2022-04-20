@@ -1,4 +1,4 @@
-package com.laisha.cargotransportservice.dao;
+package com.laisha.cts.model.dao;
 
 public final class ColumnName {
 

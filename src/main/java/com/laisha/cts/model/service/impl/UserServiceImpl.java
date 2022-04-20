@@ -1,11 +1,10 @@
-package com.laisha.cargotransportservice.service.impl;
+package com.laisha.cts.model.service.impl;
 
-import com.laisha.cargotransportservice.dao.impl.UserDaoImpl;
-import com.laisha.cargotransportservice.entity.Dispatcher;
-import com.laisha.cargotransportservice.entity.User;
-import com.laisha.cargotransportservice.exception.DaoException;
-import com.laisha.cargotransportservice.exception.ServiceException;
-import com.laisha.cargotransportservice.service.UserService;
+import com.laisha.cts.model.dao.impl.UserDaoImpl;
+import com.laisha.cts.entity.User;
+import com.laisha.cts.exception.DaoException;
+import com.laisha.cts.exception.ServiceException;
+import com.laisha.cts.model.service.UserService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

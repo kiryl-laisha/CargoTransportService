@@ -1,4 +1,4 @@
-package com.laisha.cts.connection;
+package com.laisha.cts.model.connection;
 
 import com.laisha.cts.exception.ConnectionCreatorException;
 import org.apache.logging.log4j.Level;
@@ -10,9 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
-import static com.laisha.cts.connection.ConnectionCreator.databaseProperties;
-
-public class ConnectionPoolCapacityTask extends TimerTask {
+class ConnectionPoolCapacityTask extends TimerTask {
 
     private static final Logger logger = LogManager.getLogger();
     private static final ConnectionCreator creator = ConnectionCreator.getInstance();
@@ -34,22 +32,21 @@ public class ConnectionPoolCapacityTask extends TimerTask {
     private final BlockingQueue<ProxyConnection> usedConnections;
 
     static {
-
-        String attemptsQuantity = databaseProperties.
+        String attemptsQuantity = ConnectionCreator.databaseProperties.
                 getProperty(DB_PROPERTY_QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION);
         if (attemptsQuantity != null && attemptsQuantity.matches(INTEGER_REGEXP)) {
             QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION = Integer.parseInt(attemptsQuantity);
         } else {
             QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION = DEFAULT_QUANTITY_OF_ATTEMPTS_CREATE_CONNECTION;
         }
-        String timeDelay = databaseProperties.
+        String timeDelay = ConnectionCreator.databaseProperties.
                 getProperty(DB_PROPERTY_POOL_CAPACITY_TASK_TIME_DELAY);
         if (timeDelay != null && timeDelay.matches(INTEGER_REGEXP)) {
             POOL_CAPACITY_TASK_TIME_DELAY = Integer.parseInt(timeDelay);
         } else {
             POOL_CAPACITY_TASK_TIME_DELAY = DEFAULT_POOL_CAPACITY_TASK_TIME_DELAY;
         }
-        String timeInterval = databaseProperties.
+        String timeInterval = ConnectionCreator.databaseProperties.
                 getProperty(DB_PROPERTY_POOL_CAPACITY_TASK_TIME_INTERVAL);
         if (timeInterval != null && timeInterval.matches(INTEGER_REGEXP)) {
             POOL_CAPACITY_TASK_TIME_INTERVAL = Integer.parseInt(timeInterval);

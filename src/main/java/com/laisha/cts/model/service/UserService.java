@@ -1,4 +1,4 @@
-package com.laisha.cts.service;
+package com.laisha.cts.model.service;
 
 import com.laisha.cts.entity.User;
 import com.laisha.cts.exception.ServiceException;

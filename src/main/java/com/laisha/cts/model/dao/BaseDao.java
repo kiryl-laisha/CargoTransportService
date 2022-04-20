@@ -1,7 +1,7 @@
-package com.laisha.cargotransportservice.dao;
+package com.laisha.cts.model.dao;
 
-import com.laisha.cargotransportservice.entity.AbstractEntity;
-import com.laisha.cargotransportservice.exception.DaoException;
+import com.laisha.cts.entity.AbstractEntity;
+import com.laisha.cts.exception.DaoException;
 
 import java.util.List;
 
