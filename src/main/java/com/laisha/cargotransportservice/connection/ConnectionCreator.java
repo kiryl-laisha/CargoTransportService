@@ -21,8 +21,8 @@ public class ConnectionCreator {
     private static final String DATABASE_PROPERTY_URL = "url";
 
     private static final ConnectionCreator instance = new ConnectionCreator();
+    private static final String URL;
     static final Properties databaseProperties = new Properties();
-    static final String URL;
 
     static {
         String driverName = null;
